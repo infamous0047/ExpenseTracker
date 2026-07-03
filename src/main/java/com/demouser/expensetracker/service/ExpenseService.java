@@ -5,6 +5,7 @@ import com.demouser.expensetracker.dto.expense.ExpenseResponse;
 import com.demouser.expensetracker.entity.Category;
 import com.demouser.expensetracker.entity.Expense;
 import com.demouser.expensetracker.entity.User;
+import com.demouser.expensetracker.exceptions.ResourceNotFoundException;
 import com.demouser.expensetracker.repository.CategoryRepository;
 import com.demouser.expensetracker.repository.ExpenseRepository;
 import com.demouser.expensetracker.repository.UserRepository;
@@ -31,7 +32,7 @@ public class ExpenseService {
     public ExpenseResponse create(ExpenseRequest dto) {
         User user = userRepo
             .findById(dto.userId())
-            .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("User", dto.userId()));
         Expense expense = new Expense();
         expense.setTitle(dto.title());
         expense.setDescription(dto.description());
@@ -66,14 +67,14 @@ public class ExpenseService {
     public ExpenseResponse getById(Long id) {
         Expense expenses = repo
             .findById(id)
-            .orElseThrow(() -> new RuntimeException("Expense not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Expense", id));
         return toResponse(expenses);
     }
 
     public ExpenseResponse updateById(Long id, ExpenseRequest dto) {
         Expense expenses = repo
             .findById(id)
-            .orElseThrow(() -> new RuntimeException("Expense not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Expense", id));
         expenses.setTitle(dto.title());
         expenses.setDescription(dto.description());
         expenses.setAmount(dto.amount());
@@ -89,7 +90,7 @@ public class ExpenseService {
 
     public void deleteById(Long id) {
         if (!repo.existsById(id)) {
-            throw new RuntimeException("Expense not found");
+            throw new ResourceNotFoundException("Expense", id);
         }
         repo.deleteById(id);
     }

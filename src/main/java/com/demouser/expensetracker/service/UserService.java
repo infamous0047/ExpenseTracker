@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.demouser.expensetracker.dto.user.UserRequest;
 import com.demouser.expensetracker.dto.user.UserResponse;
 import com.demouser.expensetracker.entity.User;
+import com.demouser.expensetracker.exceptions.ResourceNotFoundException;
 import com.demouser.expensetracker.repository.UserRepository;
 
 @Service
@@ -44,20 +45,20 @@ public class UserService {
 
     public UserResponse getById(Long id){
         User user = repo.findById(id)
-            .orElseThrow(()-> new RuntimeException("User not found"));
+            .orElseThrow(()-> new ResourceNotFoundException("User", id));
             return toResponse(user);
     }
 
     public void deleteById(Long id){
         if(!repo.existsById(id)){
-            throw new RuntimeException("User not found");
+            throw new ResourceNotFoundException("User", id);
         }
         repo.deleteById(id);
     }
 
     public UserResponse updateById(Long id, UserRequest dto){
         User user = repo.findById(id)
-            .orElseThrow(()-> new RuntimeException("User not found"));
+            .orElseThrow(()-> new ResourceNotFoundException("User", id));
 
             user.setUsername(dto.username());
             user.setEmail(dto.email());

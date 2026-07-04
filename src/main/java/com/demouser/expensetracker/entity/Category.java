@@ -2,6 +2,7 @@ package com.demouser.expensetracker.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -59,6 +60,19 @@ public class Category {
         expense.setCategory(null);
     }
 
+    @Override
+    public boolean equals(Object o){
+        if(this == o) return true;
+        if(!(o instanceof Category)) return false;
+        Category category = (Category) o;
+        return catId != null && catId.equals(category.catId);
+    }
+
+    @Override
+    public int hashCode(){
+        return Objects.hashCode(catId);
+    }
+    
     @Override
     public String toString(){
         return "Category id "+catId+" Category Type " + categoryType; 
